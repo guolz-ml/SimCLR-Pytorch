@@ -31,7 +31,7 @@ parser.add_argument('--n_classes', type=int, default=10,
                     help='number of classes in the dataset')
 parser.add_argument('--backbone', default='resnet18', type=str,
                     help='network architecture')
-parser.add_argument('--projection_size', type=int, default=64,
+parser.add_argument('--projection_size', type=int, default=128,
                     help=' project the representation to a 128-dimensional latent space')
 parser.add_argument('--optimizer', default='Adam', type=str,
                     choices=['Adam', 'LARS'])
@@ -41,11 +41,11 @@ parser.add_argument('--weight_decay', default=1e-6, type=float,
                     help='weight decay rate in LARS')
 parser.add_argument('--temperature', default=0.5, type=float,
                     help='Temperature in contrastive loss')
-parser.add_argument('--image_size', default=224, type=int,
+parser.add_argument('--image_size', default=32, type=int,
                     help='images size')
-parser.add_argument('--batch_size', default=128, type=int,
+parser.add_argument('--batch_size', default=512, type=int,
                     help='batch_size')
-parser.add_argument('--epochs', default=100, type=int,
+parser.add_argument('--epochs', default=200, type=int,
                     help='training epochs')
 parser.add_argument('--resume', default='pretrain_results/resnet18_cifar10_model.pth.tar', type=str,
                     help='path to latest checkpoint (default: none)')
@@ -195,8 +195,7 @@ def main():
         )
     train_loader = torch.utils.data.DataLoader(
         train_dataset, sampler=RandomSampler(train_dataset),
-        batch_size=args.batch_size, drop_last=True,
-        num_workers=args.workers
+        batch_size=args.batch_size,num_workers=args.workers
         )
 
     test_loader = torch.utils.data.DataLoader(

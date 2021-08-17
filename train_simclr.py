@@ -25,19 +25,21 @@ parser.add_argument('--dataset', default='cifar10', type=str,
                     choices=['cifar10', 'cifar100', 'STL10'], help='dataset name')
 parser.add_argument('--backbone', default='resnet18', type=str,
                     help='network architecture')
-parser.add_argument('--projection_size', type=int, default=64,
+parser.add_argument('--projection_size', type=int, default=128,
                     help=' project the representation to a 128-dimensional latent space')
 parser.add_argument('--optimizer', default='Adam', type=str,
                     choices=['Adam', 'LARS'])
+parser.add_argument('--lr', default=1e-3, type=float,
+                    help='learning rate in Adam')
 parser.add_argument('--weight_decay', default=1e-6, type=float,
                     help='weight decay rate in LARS')
 parser.add_argument('--temperature', default=0.5, type=float,
                     help='Temperature in contrastive loss')
-parser.add_argument('--image_size', default=224, type=int,
+parser.add_argument('--image_size', default=32, type=int,
                     help='images size')
-parser.add_argument('--batch_size', default=128, type=int,
+parser.add_argument('--batch_size', default=512, type=int,
                     help='batch_size')
-parser.add_argument('--epochs', default=100, type=int,
+parser.add_argument('--epochs', default=1000, type=int,
                     help='training epochs')
 parser.add_argument('--out', default='pretrain_results',
                     help='directory to output the result')
@@ -58,7 +60,7 @@ def save_checkpoint(state, checkpoint='args.out'):
 def load_optimizer(args, model):
     scheduler = None
     if args.optimizer == 'Adam':
-        optimizer = torch.optim.Adam(model.parameters(), lr=3e-4)
+        optimizer = torch.optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     elif args.optimizer == 'LARS':
         learning_rate = 0.3 * args.batch_size / 256
         optimizer = LARS(model.parameters(), lr=learning_rate,
