@@ -3,8 +3,7 @@ import torchvision
 
 class TransformSimCLR:
 
-    def __init__(self, size):
-        s = 1
+    def __init__(self, size, s=0.5):
         color_jitter = torchvision.transforms.ColorJitter(
             0.8 * s, 0.8 * s, 0.8 * s, 0.2 * s
         )
