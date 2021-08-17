@@ -3,28 +3,22 @@ import torchvision
 from models.simclr_backbone import get_backbone
 
 
-class Identity(nn.Module):
-    def __init__(self):
-        super().__init__()
-
-    def forward(self, x):
-        return x
-
-
 class SimCLR(nn.Module):
     def __init__(self, encoder, projection_size, n_features):
         super().__init__()
-        self.base_model = encoder
+        self.enc = encoder
         self.n_features = n_features
-        self.base_model.fc = Identity()
 
+        self.enc.fc = nn.Identity()  # remove final fully connected layer.
+
+        #Non-Linear Projection with a ReLU
         self.projector = nn.Sequential(
-            nn.Linear(self.n_features, self.n_features, bias=False),
+            nn.Linear(self.n_features, 2048),
             nn.ReLU(),
-            nn.Linear(self.n_features, projection_size, bias=False)
+            nn.Linear(2048, projection_size)
         )
 
     def forward(self, x):
-        embedding = self.base_model(x)
+        embedding = self.enc(x)
         out = self.projector(embedding)
         return embedding, out
